@@ -398,6 +398,7 @@ If it has been used in another environment and is no longer wanted then you will
 		* NB this cannot be done as part of install() as not all the required API is present until ready() is called
 		*/
 		if($this->auto_install) {
+			bd("auto_install running! it runs anytime we view the database migrations page!!!");
 			$temp = $this->migrationTemplate;
 			$bootstrap = $this->wire()->pages->get("template=$temp, name=bootstrap");
 			/* @var $bootstrap DbMigrationPage */
@@ -415,6 +416,7 @@ If it has been used in another environment and is no longer wanted then you will
 //				} else {
 				try {
 					$this->wire()->session->warning($this->_('Bootstrap not fully installed - Attempting re-install.'));
+					$bootstrap->of(false);
 					$bootstrap->meta()->remove('filesHash');
 //bd($bootstrap,'removed hash');
 					$bootstrap->refresh();
@@ -3073,6 +3075,7 @@ If it has been used in another environment and is no longer wanted then you will
 				$diff = $migration->array_compare($objectData, $baseData);
 				//bd($diff, 'diff');
 				$migrationItem = $migration->dbMigrateItem->get("dbMigrateName={$itemName}");
+				$migrationItem->of(false);
 				if(!$diff) {
 					$this->removeMigrationItem($migration, $migrationItem, $object, $item);
 				} else {
@@ -3097,6 +3100,7 @@ If it has been used in another environment and is no longer wanted then you will
 				//// Case 2a: Name is the same
 				if($migration->dbMigrateItem->has("dbMigrateName={$itemName}, dbMigrateType={$type}")) {
 					$migrationItem = $migration->dbMigrateItem->get("dbMigrateName={$itemName}, dbMigrateType={$type}");
+					$migrationItem->of(false);
 					//bd($migrationItem, 'CASE 2a');
 					//// Special case - deleting a new object, so just remove the item
 					if($migrationItem->dbMigrateAction->id == 1 && $action == 3) {
@@ -3107,6 +3111,7 @@ If it has been used in another environment and is no longer wanted then you will
 				//// Case 2b: Name has changed
 				if($migration->dbMigrateItem->has("dbMigrateName={$oldName}, dbMigrateType={$type}")) {
 					$migrationItem = $migration->dbMigrateItem->get("dbMigrateName={$oldName}, dbMigrateType={$type}");
+					$migrationItem->of(false);
 					$migrationItem->dbMigrateName = $itemName;
 					// For page types, check if there are any children in the migration and change their (path) names to match
 					// NB this only works for children that were added by change tracking, not manually added children
@@ -3125,7 +3130,7 @@ If it has been used in another environment and is no longer wanted then you will
 					}
 					//bd($migrationItem, 'CASE 2b');
 
-
+					
 					$migrationItem->dbMigrateAction = ($migrationItem->dbMigrateAction->id == 1 && $action != 3) ? $migrationItem->dbMigrateAction->id : $action;
 					if($migrationItem->dbMigrateAction->id == 2 && !$migrationItem->dbMigrateOldName) {
 						$migrationItem->dbMigrateOldName = $oldName;
@@ -3146,6 +3151,7 @@ If it has been used in another environment and is no longer wanted then you will
 				/// (We could have changed the name in the API, for example)
 				if($itemMatches) {
 					$migrationItem = $migration->dbMigrateItem->get("id=$itemMatches");
+					$migrationItem->of(false);
 					if($migrationItem && $migrationItem->dbMigrateName != $itemName && $migrationItem->dbMigrateName != $oldName) {
 						$migrationItem->dbMigrateName = $itemName;
 						// oldname should be unchanged (assuming it exists)
@@ -3172,6 +3178,7 @@ If it has been used in another environment and is no longer wanted then you will
 					$sourceData['dependencies'] = $migration->getDependencies($migrationItem, $item);
 					$migrationItem->meta()->set('sourceData', $sourceData);
 					//bd($sourceData, 'setting sourceData 2');
+					$migrationItem->of(false);
 					$migrationItem->save();
 					$migration->dependencySort()->save();
 				}
@@ -3199,6 +3206,8 @@ If it has been used in another environment and is no longer wanted then you will
 //bd(['item' => $item, 'type' => $type, 'action' => $action, 'oldName' => $oldName], 'In case 3');
 //			$this->wire()->log->save('debug', 'Progress 8');
 			$migrationItem = $migration->dbMigrateItem->getNew();
+			// nope; neither does removing all of this!!!
+			$migrationItem->of(false);
 			$migrationItem->dbMigrateType = $type;
 			//bd($migrationItem->dbMigrateType->title, 'type title');
 			$migrationItem->dbMigrateAction = $action;
@@ -3210,11 +3219,15 @@ If it has been used in another environment and is no longer wanted then you will
 			$migrationItem->meta()->set('sourceData', $sourceData);
 			//bd($sourceData, 'setting sourceData 3');
 			//bd($migration->dbMigrateItem, 'dbMigrateItem before addition');
+			// nope
+			//$migration->of(false);
 			if(!$migration->dbMigrateItem->has("dbMigrateName=$itemName")) {  // just in case it is already there - don't duplicate it
 				$migration->dbMigrateItem->add($migrationItem);
 				//bd($migrationItem, 'added migration item');
 			}
 			$migration->meta()->set("base_{$object}_{$item->id}", $currentData);
+			// nope
+			//$migration->of(false);
 			$migration->dependencySort()->save();
 //bd(['migration' => $migration, 'currentData' => $currentData], 'Done CASE 3');
 		}

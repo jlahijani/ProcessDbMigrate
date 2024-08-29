@@ -260,6 +260,6 @@
             }
         }
     },
-    "sourceDb": "MetaTunes Master",
+    "sourceDb": "MetaTunes Master @todo: this comment is here to indicate that this very value does get used",
     "sourceSiteUrl": "/site/"
 }

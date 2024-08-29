@@ -1756,6 +1756,9 @@ class DbMigrationPage extends DummyMigrationPage {
 	 */
 	public function installMigration($newOld, $dummy = false, $quiet = false) {
 
+		// nope!
+		$this->of(false);
+
 		$this->wire()->log->save('debug', 'In install with newOld = ' . $newOld);
 
 		if(!$this->ready and $this->name != 'dummy-bootstrap') $this->ready();  // don't call ready() for dummy-bootstrap as it has no template assigned at this point
@@ -1871,6 +1874,9 @@ class DbMigrationPage extends DummyMigrationPage {
 			// update any images in RTE fields (links may be different owing to different page ids in source and target dbs)
 			$idMapArray = $this->setIdMap($pagesInstalled);
 			//bd($idMapArray, 'idMapArray');
+
+
+			$this->of(false);
 
 			$this->fixRteHtml($pagesInstalled, $idMapArray, $newOld);
 
@@ -2344,6 +2350,7 @@ class DbMigrationPage extends DummyMigrationPage {
 			// recursively replace all source admin paths with the target path
 			$items = $this->replaceAdminPath($items, $sourceAdmin, $this->config()->urls->admin);
 		}
+		//if($this->id) $this->sourceSiteUrl = ($migrationArray['sourceSiteUrl']) ??  '';
 		$this->sourceSiteUrl = ($migrationArray['sourceSiteUrl']) ??  '';
 		//bd($items, 'items after replaceAdminPath');
 
@@ -2737,6 +2744,8 @@ class DbMigrationPage extends DummyMigrationPage {
 	public function setAndSaveRepeaters(array $repeaters, $newOld, $page = null, $options = []) {
 
 		if(!$page) $page = $this;
+		// nope/actually not necessary
+		//$page->of(false);
 		foreach($repeaters as $repeaterName => $repeaterData) {
 
 			/*
@@ -2922,7 +2931,7 @@ class DbMigrationPage extends DummyMigrationPage {
 
 			$page->$repeaterName->sort('sort');
 		}
-		$page->of(false);
+		//$page->of(false);
 		$page->save(null, $options);
 		//bd($page, 'page at end of set and save repeaters');
 	}
@@ -3147,12 +3156,14 @@ class DbMigrationPage extends DummyMigrationPage {
 		if(!$this->ready) $this->ready();
 		if(!$this->id) return false;
 
+		//$this->of(false);
+
 		// Get the migration details - exit if they don't exist
 		$migrationPath = $this->migrationsPath . $this->name;
 		if(!$found) {
 			if(is_dir($migrationPath)) {
 				$found = $migrationPath . '/new/migration.json';
-//bd($found, 'found file');
+bd($found, 'found file');
 			}
 		}
 		if(!$found || ($found && !file_exists($found))) {
@@ -3229,6 +3240,7 @@ class DbMigrationPage extends DummyMigrationPage {
 //bd($this->meta('installable'), 'installable?');
 		if(!$this->meta('installable') or $this->meta('locked')) return true;  // ToDo Don't need 2nd condition?
 
+
 		/*
 		* Only installable pages (i.e. in target environment) need to be refreshed from json files
 		*/
@@ -3243,6 +3255,11 @@ class DbMigrationPage extends DummyMigrationPage {
 					$pageName = $values['name'];
 					if($this->name != $pageName) $this->wire()->session->warning($this->_('Page name in migrations file is not the same as the host folder.'));
 					$p = $this->migrations->get("name=$pageName, include=all");
+					//bd($p, 'p');
+					//bd($this, 'this');
+					// !!! NECESSARY !!!
+					$this->of(false);
+					$p->of(false);
 					/* @var $p DbMigrationPage */
 					// bootstrap must always refresh because on upgrade, the old/migration.json will have been updated as uninstall is not permitted
 					if($this->name != 'bootstrap') {
@@ -3357,13 +3374,18 @@ class DbMigrationPage extends DummyMigrationPage {
 		$values = $r['values'];
 		// set the ordinary values first
 		if($p and $p->id and $p->meta() and $p->meta('installable')) {
+			// nope!
+			$p->of(false);
+			$this->of(false);
 			$p->meta('allowSave', true);  // to allow save
-			//bd([$p, $values], 'page, values');
-			$p->setAndSave($values, ['noHooks' => true, 'quiet' => true]);
+			bd([$p, $values], 'page, values');
+			// this is the issue!!! use save. not setAndSave which was incorrectly used
+			$p->save($values, ['noHooks' => true, 'quiet' => true]);
 			if(count($repeaters) > 0) $this->setAndSaveRepeaters($repeaters, 'new', $p, ['noHooks' => true, 'quiet' => true]);
 			$p->meta()->remove('allowSave');  // reset
 		} else {
-			$p->setAndSave($values, ['noHooks' => true, 'quiet' => true]);
+			// this is the issue!!! use save. not setAndSave which was incorrectly used
+			$p->save($values, ['noHooks' => true, 'quiet' => true]);
 			if(count($repeaters) > 0) $this->setAndSaveRepeaters($repeaters, 'new', $p, ['noHooks' => true, 'quiet' => true]);
 		}
 	}
