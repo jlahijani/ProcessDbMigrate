@@ -3427,9 +3427,10 @@ class DbMigrationPage extends DummyMigrationPage {
 	 */
 	public function listItems($type = null) {
 		$list = [];
-		$items = $this->getFormatted('dbMigrateItem'); // getFormatted to get only published items
+		//$items = $this->getFormatted('dbMigrateItem'); // getFormatted to get only published items
+		$items = $this->dbMigrateItem->find("status=1"); // get only published items (avoid potential orphans)
 		foreach($items as $item) {
-			if($item->isUnpublished) continue;
+			if($item->isUnpublished) continue; // @todo: still necessary?
 			$itemArray = $this->populateItem($item);
 			if(!$itemArray['type'] or !$itemArray['name']) continue;
 			$expanded = $this->expandItem($itemArray);
