@@ -11,17 +11,17 @@
 #Inputfield_dbMigrateRuntimeAction .full-width { width: 100%; }
 
 /* Special repeater rows */
-#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem:not(.InputfieldRepeaterDeletePending) > label { background-color: transparent; }
+#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem:not(.InputfieldRepeaterDeletePending):not(.InputfieldRepeaterItemRequested) > label { background-color: transparent; outline: 1px solid transparent !important; }
 
-#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.fields-new:not(.InputfieldRepeaterDeletePending) > label { background-image: linear-gradient(to right, #615a5a, #295f1b 50%); }
-#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.fields-changed:not(.InputfieldRepeaterDeletePending) > label { background-image: linear-gradient(to right, #62be48, #295f1b 25%); }
-#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.fields-removed:not(.InputfieldRepeaterDeletePending) > label { background-image: linear-gradient(to right, #295f1b, #433e3e 50%); }
-#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.templates-new:not(.InputfieldRepeaterDeletePending) > label { background-image: linear-gradient(to right, #615a5a, #845333 50%); }
-#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.templates-changed:not(.InputfieldRepeaterDeletePending) > label { background-image: linear-gradient(to right, #dc8f62, #845333 25%); }
-#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.templates-removed:not(.InputfieldRepeaterDeletePending) > label { background-image: linear-gradient(to right, #845333, #433e3e 50%); }
-#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.pages-new:not(.InputfieldRepeaterDeletePending) > label { background-image: linear-gradient(to right, #615a5a, #0e54d7 50%); }
-#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.pages-changed:not(.InputfieldRepeaterDeletePending) > label { background-image: linear-gradient(to right, #5e7ab3, #0e54d7 25%); }
-#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.pages-removed:not(.InputfieldRepeaterDeletePending) > label { background-image: linear-gradient(to right, #0e54d7, #433e3e 50%); }
+#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.fields-new:not(.InputfieldRepeaterDeletePending):not(.InputfieldRepeaterItemRequested) > label { background-image: linear-gradient(to right, #615a5a, #295f1b 50%); }
+#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.fields-changed:not(.InputfieldRepeaterDeletePending):not(.InputfieldRepeaterItemRequested) > label { background-image: linear-gradient(to right, #62be48, #295f1b 25%); }
+#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.fields-removed:not(.InputfieldRepeaterDeletePending):not(.InputfieldRepeaterItemRequested) > label { background-image: linear-gradient(to right, #295f1b, #433e3e 50%); }
+#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.templates-new:not(.InputfieldRepeaterDeletePending):not(.InputfieldRepeaterItemRequested) > label { background-image: linear-gradient(to right, #615a5a, #845333 50%); }
+#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.templates-changed:not(.InputfieldRepeaterDeletePending):not(.InputfieldRepeaterItemRequested) > label { background-image: linear-gradient(to right, #dc8f62, #845333 25%); }
+#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.templates-removed:not(.InputfieldRepeaterDeletePending):not(.InputfieldRepeaterItemRequested) > label { background-image: linear-gradient(to right, #845333, #433e3e 50%); }
+#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.pages-new:not(.InputfieldRepeaterDeletePending):not(.InputfieldRepeaterItemRequested) > label { background-image: linear-gradient(to right, #615a5a, #0e54d7 50%); }
+#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.pages-changed:not(.InputfieldRepeaterDeletePending):not(.InputfieldRepeaterItemRequested) > label { background-image: linear-gradient(to right, #5e7ab3, #0e54d7 25%); }
+#wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.pages-removed:not(.InputfieldRepeaterDeletePending):not(.InputfieldRepeaterItemRequested) > label { background-image: linear-gradient(to right, #0e54d7, #433e3e 50%); }
 
 #wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.has-wand > label .InputfieldRepeaterItemLabel:before { font-family:'FontAwesome'; color: #e0cfe8; content:"\f0d0"; display:inline-block; margin-right:6px; }
 #wrap_Inputfield_dbMigrateItem .InputfieldRepeaterItem.has-arrows > label .InputfieldRepeaterItemLabel:before { font-family:'FontAwesome'; color: #e0cfe8; content:"\f0d0\f160"; display:inline-block; margin-right:6px; }
