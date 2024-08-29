@@ -225,7 +225,8 @@ class DbMigrationPage extends DummyMigrationPage {
 			/*
 			 * GET DATA FROM PAGE AND SAVE IN JSON
 			 */
-			$itemRepeater = $this->getFormatted('dbMigrateItem'); //getFormatted to get only published items
+			//$itemRepeater = $this->getFormatted('dbMigrateItem'); //getFormatted to get only published items
+			$itemRepeater = $this->dbMigrateItem->find("status=1");
 			//bd($itemRepeater, $itemRepeater);
 			if($newOld == 'new' || $newOld == 'compare') {
 				$items = $this->cycleItems($itemRepeater, $excludeAttributes, $excludeFields, $newOld, 'new');
@@ -1217,7 +1218,8 @@ class DbMigrationPage extends DummyMigrationPage {
 				if($this->template == ProcessDbMigrate::MIGRATION_TEMPLATE) {
 					$templateOk = false;
 					$i = 0;
-					$allItems = $this->getFormatted('dbMigrateItem'); // getFormatted to get only published items
+					//$allItems = $this->getFormatted('dbMigrateItem'); // getFormatted to get only published items
+					$allItems = $this->dbMigrateItem->find("status=1");
 					if($compareType == 'new' and $newOld == 'new' and isset($templateName)) {
 						//bd($templateName, 'templatename');
 						foreach($allItems as $other) {
@@ -3561,7 +3563,8 @@ class DbMigrationPage extends DummyMigrationPage {
 	 * @throws WireException
 	 */
 	public function dependencySort() {
-		$items = $this->getFormatted('dbMigrateItem');
+		//$items = $this->getFormatted('dbMigrateItem');
+		$items = $this->dbMigrateItem->find("status=1");
 //		bd($items, 'items in dependency sort');
 		$items->unique();
 		//bd($items, 'unique items in dependency sort');
@@ -3605,7 +3608,8 @@ class DbMigrationPage extends DummyMigrationPage {
 	public function getDependencies($migrationItem, $item = null) {
 		//bd(['item' => $migrationItem, 'name' => $migrationItem->dbMigrateName, 'sourceData' => $migrationItem->meta('sourceData')], 'item in getDependencies');
 		$sourceData = $migrationItem->meta('sourceData');
-		$items = $this->getFormatted('dbMigrateItem');
+		//$items = $this->getFormatted('dbMigrateItem');
+		$items = $this->dbMigrateItem->find("status=1");
 //		bd($items, 'items in getDependencies');
 		switch($migrationItem->dbMigrateType->id) {
 			case 1: // field
@@ -3868,7 +3872,8 @@ class DbMigrationPage extends DummyMigrationPage {
 	public function findMigrationItemsByObjectId($objectType, $idArray) {
 		//NB if two items of different object types have same object id there will be confusion (and possibly cyclic graph)
 		//ToDo Fix it!
-		$items = $this->getFormatted('dbMigrateItem');
+		//$items = $this->getFormatted('dbMigrateItem');
+		$items = $this->dbMigrateItem->find("status=1");
 		$itemArray = new WireArray();
 		if(!is_array($idArray) && is_int($idArray)) $idArray = [$idArray];
 		if(!is_array($idArray)) return $itemArray;
@@ -4369,7 +4374,8 @@ class DbMigrationPage extends DummyMigrationPage {
 		if(!$p or !$p->id) return;
 		if($this->id != $p->id) return;
 		$k = 0;
-		foreach($this->getFormatted('dbMigrateItem') as $item) { // getFormatted to get only published items
+		//foreach($this->getFormatted('dbMigrateItem') as $item) { // getFormatted to get only published items
+		foreach($this->dbMigrateItem->find("status=1") as $item) {
 			/* @var $item RepeaterDbMigrateItemPage */
 			$k++;
 			if(!$item->dbMigrateType or !$item->dbMigrateAction or !$item->dbMigrateName) {

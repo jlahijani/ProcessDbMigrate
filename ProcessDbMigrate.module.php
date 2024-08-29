@@ -902,7 +902,8 @@ If it has been used in another environment and is no longer wanted then you will
 				//bd($installedStatus);
 				$lockIcon = ($migrationPage->meta('locked')) ? '<i class="fa fa-lock"></i>' : '<i class="fa fa-unlock"></i>';
 				$itemList = [];
-				foreach($migrationPage->getFormatted('dbMigrateItem') as $migrateItem) {
+				//foreach($migrationPage->getFormatted('dbMigrateItem') as $migrateItem) {
+				foreach($migrationPage->dbMigrateItem->find("status=1") as $migrateItem) {
 					/* @var $migrateItem RepeaterPage */
 					$oldName = ($migrateItem->dbMigrateOldName) ? '|' . $migrateItem->dbMigrateOldName : '';
 					$itemList[] = '<em>' . $migrateItem->dbMigrateAction->title . ' ' . $migrateItem->dbMigrateType->title . '</em>: ' . $migrateItem->dbMigrateName . $oldName;
@@ -2792,7 +2793,8 @@ If it has been used in another environment and is no longer wanted then you will
 			if($this->trackingField && $item->name == FieldtypeRepeater::fieldPageNamePrefix . $this->trackingField->id) return; // FieldtypeRepeater::fieldPageNamePrefix is 'for_field_'
 			// Also, if we are deleting a repeater parent for a field that is in the migration (and will be deleted after this page is deleted) then omit it for the same reason
 			$fieldId = str_replace(FieldtypeRepeater::fieldPageNamePrefix, '', $item->name);
-			$dbMigrateItem = $migration->getFormatted('dbMigrateItem');
+			//$dbMigrateItem = $migration->getFormatted('dbMigrateItem');
+			$dbMigrateItem = $migration->dbMigrateItem->find("status=1");
 			$newFields = $dbMigrateItem->find("dbMigrateType=1");
 			foreach($newFields as $newField) {
 				$sourceField = $this->pages()->get("name={$newField->dbMigrateName}");
@@ -3277,7 +3279,8 @@ If it has been used in another environment and is no longer wanted then you will
 	public function itemMatches($migration, $item) {
 		/* @var DbMigrationPage $migration */
 		$existingItemIds = [];
-		foreach($migration->getFormatted('dbMigrateItem') as $migrationItem) {
+		//foreach($migration->getFormatted('dbMigrateItem') as $migrationItem) {
+		foreach($migration->dbMigrateItem->find("status=1") as $migrationItem) {
 			if($migrationItem && $migrationItem->id && isset($migrationItem->meta('sourceData')['id']) && $migrationItem->meta('sourceData')['id']) {
 				$existingItemIds[$migrationItem->meta('sourceData')['id']] = $migrationItem->id;
 			}
