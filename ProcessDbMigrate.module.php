@@ -200,7 +200,7 @@ class ProcessDbMigrate extends Process implements Module, ConfigurableModule {
 		$this->set('parentUrl', $this->adminUrl . self::moduleInfo()['page']['parent'] . '/');
 		$this->set('parentHttpUrl', $this->adminHttpUrl . self::moduleInfo()['page']['parent'] . '/');
 		$this->set('title', self::moduleInfo()['page']['title']);
-		$this->set('adminProcess', str_replace(__NAMESPACE__ . '\\', '', get_class()));
+		$this->set('adminProcess', str_replace(__NAMESPACE__ . '\\', '', get_class($this)));
 		$this->set('migrations', wire('pages')->get($this->adminPath . self::MIGRATION_PARENT));
 		$this->set('comparisons', wire('pages')->get($this->adminPath . self::COMPARISON_PARENT));
 		$this->set('migrationTemplate', wire('templates')->get(self::MIGRATION_TEMPLATE));
