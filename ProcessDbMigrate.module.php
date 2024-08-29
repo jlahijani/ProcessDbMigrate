@@ -766,17 +766,31 @@ If it has been used in another environment and is no longer wanted then you will
 		//Check all templates with dbMigrate tags to ensure there are no migration pages
 		$taggedTemplates = wire()->templates->find("tags=dbMigrate");
 		$templateList = $taggedTemplates->implode('|', 'name');
-		$pagesUsingTemplates = wire()->pages->find("template=$templateList, include=all");
+		$pagesUsingTemplates = wire()->pages->find("template=$templateList, include=all"); // gets trashed pages as well
 		if($pagesUsingTemplates and $pagesUsingTemplates->count() > 0) {
+			$links = "";
+
 			foreach($pagesUsingTemplates as $pageUsingTemplate) {
-				if(($pageUsingTemplate->template == self::MIGRATION_TEMPLATE or $pageUsingTemplate->template == self::COMPARISON_TEMPLATE)
-					and $pageUsingTemplate->name != 'bootstrap') {
-					$this->error($this->_('Uninstall aborted as there are migration and/or comparison pages. Delete all comparison pages and all migration pages except for bootstrap before uninstalling.'));
-					$event->replace = true; // prevents original uninstall
-					$this->session->redirect("./edit?name=$class"); // prevent "module uninstalled" message
-					break;
+				if(
+					($pageUsingTemplate->template == self::MIGRATION_TEMPLATE or $pageUsingTemplate->template == self::COMPARISON_TEMPLATE)
+					and
+					$pageUsingTemplate->name != 'bootstrap'
+				) {
+					$links .= "<li><a target='_blank' href='{$pageUsingTemplate->editUrl}'>{$pageUsingTemplate->get('title|name')}</a></li>";
 				}
 			}
+		}
+
+		if($links) {
+			$this->error(
+				// Delete all comparison pages and all migration pages except for bootstrap before uninstalling.
+				$this->_('Uninstall aborted as there are existing migration and/or comparison pages.') .
+					"<p class='uk-text-small uk-margin-small-top uk-margin-remove-bottom'>The following pages need to be trashed and completely deleted first:</p>" .
+					"<ul class='uk-list-disc uk-text-small uk-margin-remove-top'>".$links."</ul>",
+				Notice::allowMarkup
+			);
+			$event->replace = true; // prevents original uninstall
+			$this->session->redirect("./edit?name=$class"); // prevent "module uninstalled" message
 		}
 
 		// unset system flags on templates and fields
