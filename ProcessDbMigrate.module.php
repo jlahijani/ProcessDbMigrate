@@ -190,7 +190,7 @@ class ProcessDbMigrate extends Process implements Module, ConfigurableModule {
 		parent::init();
 		require_once('DbMigrationPage.class.php');
 		require_once('DbComparisonPage.class.php');
-		$this->wire()->modules->get('JqueryWireTabs');
+		
 		// Set properties
 		$this->set('adminPath', wire('pages')->get(2)->path());
 		$this->set('adminUrl', wire('pages')->get(2)->url());
@@ -862,12 +862,7 @@ If it has been used in another environment and is no longer wanted then you will
 		$pageEdit = $this->wire('urls')->admin . 'page/edit/?id=';
 		$form = $this->modules->get("InputfieldForm");
 		/* @var $form InputfieldForm */
-		$prepend = self::helpPopout('Help') . '<ul class="WireTabs uk-tab" uk-switcher>' .
-			'<li id="migrations-tab"><a href="#migrations">Migrations</a></li>' .
-			'<li id="database-comparisons-tab"><a href="#database-comparisons">Database comparisons</a></li>' .
-			'</ul>';
-		// uk-switcher uk-margin classes need to be added to <ul> parent of fieldset - in the js
-		$form->set('prependMarkup', $prepend);
+
 
 		// create a fieldset for migrations
 //        $fieldset = $this->modules->get("InputfieldFieldset");
@@ -1802,7 +1797,6 @@ If it has been used in another environment and is no longer wanted then you will
 	 */
 	public function getModuleConfigInputfields(InputfieldWrapper $inputfields) {
 		$modules = $this->wire()->modules;
-		// JqueryWireTabs is loaded in init()
 
 		// Load custom CSS and JS
 		$config = $this->wire()->config;
@@ -1815,22 +1809,6 @@ If it has been used in another environment and is no longer wanted then you will
 
 		$help = self::helpPopout('Popout indexed help', true);
 
-		// Wrapper to hold the tabs
-		/** @var InputfieldWrapper $tabs_container */
-		$tabs_container = $this->wire(new InputfieldWrapper());
-		// All newly-created objects that are derived from Wire SHOULD have their dependencies injected. In order to do this, pass the new object through the wire() method.
-
-		$tabs_container->id = 'mct-tabs-container';
-		$inputfields->add($tabs_container);
-
-		// Tab 1
-		/** @var InputfieldWrapper $tab1 */
-		$tab1 = $this->wire(new InputfieldWrapper());
-		$tab1->attr('title', 'Settings');
-		$tab1->attr('class', 'WireTab');
-		$tab1->columnWidth = 100;
-		$tabs_container->add($tab1);
-
 		/* @var InputfieldCheckbox $f */
 		$f = $modules->InputfieldCheckbox;
 		$f_name = 'enable_dbMigrate';
@@ -1841,7 +1819,7 @@ If it has been used in another environment and is no longer wanted then you will
 		$f->columnWidth = 50;
 		$f->value = $this->$f_name;
 		$f->checked = ($f->value == 1) ? 'checked' : '';
-		$tab1->add($f);
+		$inputfields->add($f);
 
 		/* @var InputfieldCheckbox $f */
 		$f = $modules->InputfieldCheckbox;
@@ -1854,14 +1832,14 @@ If it has been used in another environment and is no longer wanted then you will
 		$f->columnWidth = 50;
 		$f->value = $this->$f_name;
 		$f->checked = ($f->value == 1) ? 'checked' : '';
-		$tab1->add($f);
+		$inputfields->add($f);
 
 		// Database naming fieldset
 		/** @var InputfieldFieldset $dbName */
 		$dbName = $this->wire(new InputfieldFieldset());
 		$dbName->label = $this->_('Database naming');
 		$dbName->columnWidth = 100;
-		$tab1->add($dbName);
+		$inputfields->add($dbName);
 
 		/* @var InputfieldText $f */
 		$f = $modules->InputfieldText;
@@ -1911,7 +1889,7 @@ If it has been used in another environment and is no longer wanted then you will
 //		$tracking->description = $this->_('Use selectors to define scope of object changes to be tracked');
 //		$tracking->notes = $this->_('If you do not enter a selector then no changes will be tracked. Enter id>0 to (potentially) track everything.');
 //		$tracking->columnWidth = 100;
-//		$tab1->add($tracking);
+//		$inputfields->add($tracking);
 //
 //		/* @var InputfieldTextarea $f */
 //		$f = $modules->InputfieldText;
@@ -1953,7 +1931,7 @@ If it has been used in another environment and is no longer wanted then you will
 		$exclusions->label = $this->_('Global exclusions');
 		$exclusions->notes = $this->_('Exclusions specified here will apply to all migrations');
 		$exclusions->columnWidth = 100;
-		$tab1->add($exclusions);
+		$inputfields->add($exclusions);
 
 		/* @var InputfieldTextarea $f */
 		$f = $modules->InputfieldTextarea;
@@ -1998,7 +1976,7 @@ If it has been used in another environment and is no longer wanted then you will
 		$f->columnWidth = 50;
 		$f->value = $this->$f_name;
 		$f->checked = ($f->value == 1) ? 'checked' : '';
-		$tab1->add($f);
+		$inputfields->add($f);
 
 		/* @var InputfieldCheckbox $f */
 		$f = $modules->InputfieldCheckbox;
@@ -2010,7 +1988,7 @@ If it has been used in another environment and is no longer wanted then you will
 		$f->columnWidth = 50;
 		$f->value = $this->$f_name;
 		$f->checked = ($f->value == 1) ? 'checked' : '';
-		$tab1->add($f);
+		$inputfields->add($f);
 
 		/* @var InputfieldInteger $f */
 		$f = $modules->InputfieldInteger;
@@ -2025,14 +2003,7 @@ If it has been used in another environment and is no longer wanted then you will
 		$f->value = $this->$f_name;
 		$f->min = 1;
 		$f->max = 5;
-		$tab1->add($f);
-
-		// Tab 2
-		/** @var InputfieldWrapper $tab2 */
-		$tab2 = $this->wire(new InputfieldWrapper());
-		$tab2->attr('title', 'Help');
-		$tab2->attr('class', 'WireTab');
-		$tabs_container->add($tab2);
+		$inputfields->add($f);
 
 		/* @var InputfieldMarkup $f */
 		$f = $modules->InputfieldMarkup;
@@ -2043,8 +2014,8 @@ If it has been used in another environment and is no longer wanted then you will
 		$f->notes = $this->_('');
 		$f->columnWidth = 100;
 		$f->value = $help;
-//        $f->collapsed = Inputfield::collapsedYes;
-		$tab2->add($f);
+		$f->collapsed = Inputfield::collapsedYes;
+		$inputfields->add($f);
 
 	}
 

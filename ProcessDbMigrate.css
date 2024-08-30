@@ -1,11 +1,4 @@
 
-#mct-tabs-container { margin-top:20px; margin-bottom:20px; }
-
-.WireTabs li {
-  padding: 0 0 0 1em;
-  background: none;
-}
-
 /* modify page edit in target environments */
 #Inputfield_dbMigrateLogChanges .noDisplay { display: none; }
 #Inputfield_dbMigrateRuntimeAction .full-width { width: 100%; }
