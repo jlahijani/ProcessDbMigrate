@@ -860,20 +860,19 @@ If it has been used in another environment and is no longer wanted then you will
 		}
 		if($this->suppress_hooks) $this->wire()->error("Hook suppression is on - migrations will not work correctly - unset in the module settings.");
 		$pageEdit = $this->wire('urls')->admin . 'page/edit/?id=';
-		$form = $this->modules->get("InputfieldForm");
+
+		$this->modules->get('JqueryWireTabs');
+
 		/* @var $form InputfieldForm */
+		$form = $this->modules->get("InputfieldForm");
+		$form->attr('id', 'ProcessDbMigrate');
 
-
-		// create a fieldset for migrations
-//        $fieldset = $this->modules->get("InputfieldFieldset");
-//        $fieldset->label = "Migrations";
-//        $fieldset->attr('id+name', 'migrations');
+		// tab 1 - Migrations
+		$tab = new InputfieldWrapper();
+		$tab->attr('id', 'migrations');
+		$tab->attr('title', 'Migrations');
+		$tab->attr('class', 'WireTab');
 		$field = $this->modules->get("InputfieldMarkup");
-		/* @var $field InputfieldMarkup */
-
-		$field->attr('id+name', 'migrations');
-		$field->set('themeBorder', 'line');
-
 		$table = $this->wire('modules')->get("MarkupAdminDataTable");
 		$table->headerRow(['Name', 'Type', 'Status', 'Title', 'Summary', 'Items', 'Created']);
 		$table->setSortable(true);
@@ -892,7 +891,7 @@ If it has been used in another environment and is no longer wanted then you will
 						$statusColour = ($status == 'exported') ? 'lightgreen' : 'salmon';
 					}
 				} else {
-//                $status = 'Locked';
+					// $status = 'Locked';
 					$statusColour = 'LightGrey';
 				}
 				//bd($migrationPage, $status);
@@ -919,7 +918,6 @@ If it has been used in another environment and is no longer wanted then you will
 				);
 				$table->row($data);
 			}
-
 		}
 		$this->wire('modules')->get('JqueryUI')->use('modal');
 		$out = '<div><h3>' . $this->_('Existing migrations are listed below. Go to the specific migration page for any actions.') . '</h3><p>' .
@@ -940,10 +938,15 @@ If it has been used in another environment and is no longer wanted then you will
 		$btn->attr('value', "Refresh migrations");
 		$btn->showInHeader();
 		$out .= $btn->render();
-
 		$field->value = $out;
-		$form->append($field);
+		$tab->add($field);
+		$form->append($tab);
 
+		// tab 2 - Comparisons
+		$tab = new InputfieldWrapper();
+		$tab->attr('id', 'database-comparisons');
+		$tab->attr('title', 'Database Comparisons');
+		$tab->attr('class', 'WireTab');
 		$field = $this->modules->get("InputfieldMarkup");
 		/* @var $field InputfieldMarkup */
 		$field->attr('id+name', 'database-comparisons');
@@ -972,7 +975,6 @@ If it has been used in another environment and is no longer wanted then you will
 				);
 				$table->row($data);
 			}
-
 		}
 		$this->wire('modules')->get('JqueryUI')->use('modal');
 		$out = '<div><h3>' . $this->_('Existing database comparison pages are listed below. Go to the specific page to compare.') . '</h3></div>';
@@ -987,8 +989,8 @@ If it has been used in another environment and is no longer wanted then you will
 		$btn->showInHeader();
 		$out .= $btn->render();
 		$field->value = $out;
-
-		$form->append($field);
+		$tab->add($field);
+		$form->append($tab);
 
 		return $form->render();
 	}
