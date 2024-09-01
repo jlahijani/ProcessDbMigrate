@@ -833,6 +833,8 @@ If it has been used in another environment and is no longer wanted then you will
 					$this->_('Re-install the module and fix the cause of the problem before uninstalling again.'));
 				$abort = false; //allow uninstall to complete as re-installation of bootstrap may be required to enable proper uninstallation
 			}
+			$this->message(sprintf($this->_('Removed %s'), $setupPage->path));
+			$this->wire()->pages->delete($setupPage, true);
 		}
 		// uninstall?
 		if($abort) {
