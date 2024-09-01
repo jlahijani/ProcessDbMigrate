@@ -89,7 +89,7 @@ class ProcessDbMigrate extends Process implements Module, ConfigurableModule {
 		return $info;
 	}
 
-	const debug = true;
+	const debug = false;
 
 	/*
 	 * Name of template for migration pages
